@@ -3,6 +3,8 @@
 // this should be more parameterized; numbers are approximate
 face = 2.02;
 $fn = 180;
+screw_off = 35; // x/y offsets for mounting screw holes
+screw_d = 5;    // hole diameter for mounting screws
 
 difference() {
     union() {
@@ -20,10 +22,10 @@ difference() {
                 // fan area
                 cylinder(d=80, h=face);
                 // mounting screw holes
-                translate([-36, -36, 0]) cylinder(d=4, h=face);
-                translate([36, -36, 0]) cylinder(d=4, h=face);
-                translate([-36, 36, 0]) cylinder(d=4, h=face);
-                translate([36, 36, 0]) cylinder(d=4, h=face);
+                translate([-screw_off, -screw_off, 0]) cylinder(d=screw_d, h=face);
+                translate([screw_off, -screw_off, 0]) cylinder(d=screw_d, h=face);
+                translate([-screw_off, screw_off, 0]) cylinder(d=screw_d, h=face);
+                translate([screw_off, screw_off, 0]) cylinder(d=screw_d, h=face);
             }
             union() {
                 // grill center and bars
