@@ -12,7 +12,8 @@ m_d = 5.2; // diameter of mounting holes in flange
 flange = 10; // width of mounting flange
 
 module side_fill(x_off) {
-    translate([x_off, -y_off_n, 0]) cube([shell, 2*y_off_n, 23]);
+    translate([x_off, -(y_off_n-(2*shell)), 0])
+        cube([shell, 2*(y_off_n-(2*shell)), 23]);
 }
 module hex_hole(x, y, z, r=0) {
     $fn = 6;
