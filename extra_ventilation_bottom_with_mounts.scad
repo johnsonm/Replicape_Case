@@ -1,12 +1,15 @@
 // I wanted a case with more airflow than the original design
 // and with cutouts to fit the beaglebone green
 // The case is not quite centered; the numbers are approximate
+// There are a lot of "magic numbers" here from experimenting
 x_off_p = 40.37;
 x_off_n = 40.56;
 shell = 2.05;
 y_off_n = 58.31;
 y_off_p = 54.88;
 hd = 3; // air holes
+m_d = 5.2; // diameter of mounting holes in flange
+flange = 10; // width of mounting flange
 
 module side_fill(x_off) {
     translate([x_off, -y_off_n, 0]) cube([shell, 2*y_off_n, 23]);
@@ -39,11 +42,42 @@ module bbg_slots() {
     // and USB mini under the board
     translate([-25, -y_off_n, 6]) cube([12, shell, 5]);
 }
+module bottom_flange() {
+    // designed to mount to corner of 2020 extrusion
+    // similarly to original X5S electronics
+    $fn = 30;
+    y_n_fl = 2.4;
+    difference() { // union() { to debug placement
+        hull() {
+            translate([-(x_off_n+flange), -(y_off_n+y_n_fl), 0])
+                cylinder(d=m_d, h=shell);
+            translate([x_off_p-1, -(y_off_n+y_n_fl), 0])
+                cylinder(d=m_d, h=shell);
+            translate([x_off_p-1, y_off_p+flange, 0])
+                cylinder(d=m_d, h=shell);
+            translate([-(x_off_n+flange), y_off_p+flange, 0])
+                cylinder(d=m_d, h=shell);
+        }
+        union() {
+            // long side
+            translate([-(x_off_n+shell+flange/2), -(y_off_n-flange), 0])
+                cylinder(d=m_d, h=shell*2);
+            translate([-(x_off_n+shell+flange/2), y_off_p-flange, 0])
+                cylinder(d=m_d, h=shell*2);
+            // short side
+            translate([x_off_p-flange, y_off_p+shell+flange/2, 0])
+                cylinder(d=m_d, h=shell*2);
+            translate([-(x_off_n-flange), y_off_p+shell+flange/2, 0])
+                cylinder(d=m_d, h=shell*2);
+        }
+    }
+}
 difference() {
     union() {
-        translate([0, 0, 20.4]) import("replicape_case_-_bottom_with_mounts.stl");
+        translate([0, 0, 20.4]) import("replicape_case_-_bottom.stl");
         side_fill(x_off_p);
         mirror([1,0,0]) side_fill(x_off_n);
+        bottom_flange();
     }
     union() {
         vents(x_off_p);
