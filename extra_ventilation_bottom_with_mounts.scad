@@ -37,39 +37,61 @@ module end_vents(y_off) {
         hex_hole(x, y_off_p, 4*hd, 90);
     }
 }
+module end_power_cutout() {
+    translate([-(x_off_n-(2*shell)), y_off_p, 22])
+        cube([x_off_p+x_off_n-(4*shell), shell, 3]);
+}
 module bbg_slots() {
     // beaglebone green has wider USB instead of 5V barrel,
-    translate([-10, -y_off_n, 11.25]) cube([30, shell, 15]);
+    // and just leave room for some manufacturing variance
+    translate([-11.5, -y_off_n, 11]) cube([34, shell, 15]);
     // and USB mini under the board
-    translate([-25, -y_off_n, 6]) cube([12, shell, 5]);
+    translate([-25, -y_off_n, 6]) cube([12, shell, 7]);
 }
 module bottom_flange() {
     // designed to mount to corner of 2020 extrusion
     // similarly to original X5S electronics
     $fn = 30;
     y_n_fl = 2.4;
-    difference() { // union() { to debug placement
-        hull() {
-            translate([-(x_off_n+flange), -(y_off_n+y_n_fl), 0])
-                cylinder(d=m_d, h=shell);
-            translate([x_off_p-1, -(y_off_n+y_n_fl), 0])
-                cylinder(d=m_d, h=shell);
-            translate([x_off_p-1, y_off_p+flange, 0])
-                cylinder(d=m_d, h=shell);
-            translate([-(x_off_n+flange), y_off_p+flange, 0])
-                cylinder(d=m_d, h=shell);
+    mounting_holes = [
+        // long sides
+        [-(x_off_n+shell+flange/2), -(y_off_n-flange)],
+        [-(x_off_n+shell+flange/2), y_off_p-flange],
+        [x_off_p+shell+flange/2, -(y_off_n-flange)],
+        [x_off_p+shell+flange/2, y_off_p-flange],
+        // short sides
+        [x_off_p-flange, y_off_p+shell+flange/2],
+        [-(x_off_n-flange), y_off_p+shell+flange/2],
+        [x_off_p-flange, -(y_off_n+shell+flange/2)],
+        [-(x_off_n-flange), -(y_off_n+shell+flange/2)],
+    ];
+    difference() {
+        union() {
+            hull() {
+                for (loc=[
+                    [-(x_off_n+flange), -(y_off_n+flange)],
+                    [x_off_p+flange, -(y_off_n+flange)],
+                    [x_off_p+flange, y_off_p+flange],
+                    [-(x_off_n+flange), y_off_p+flange],
+                ]) {
+                    x = loc[0];
+                    y = loc[1];
+                    translate([x, y, 0])
+                        cylinder(d=m_d, h=shell);
+                }
+            }
+            for (loc=mounting_holes) {
+                x = loc[0];
+                y = loc[1];
+                translate([x, y, 0]) cylinder(d=8, h=5);
+            }
         }
         union() {
-            // long side
-            translate([-(x_off_n+shell+flange/2), -(y_off_n-flange), 0])
-                cylinder(d=m_d, h=shell*2);
-            translate([-(x_off_n+shell+flange/2), y_off_p-flange, 0])
-                cylinder(d=m_d, h=shell*2);
-            // short side
-            translate([x_off_p-flange, y_off_p+shell+flange/2, 0])
-                cylinder(d=m_d, h=shell*2);
-            translate([-(x_off_n-flange), y_off_p+shell+flange/2, 0])
-                cylinder(d=m_d, h=shell*2);
+            for (loc=mounting_holes) {
+                x = loc[0];
+                y = loc[1];
+                translate([x, y, 0]) cylinder(d=m_d, h=5);
+            }
         }
     }
 }
@@ -85,5 +107,6 @@ difference() {
         end_vents(y_off_p);
         mirror([1,0,0]) vents(x_off_n);
         bbg_slots();
+        end_power_cutout();
     }
 }

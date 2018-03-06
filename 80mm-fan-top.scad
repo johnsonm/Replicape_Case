@@ -3,7 +3,7 @@
 // this should be more parameterized; numbers are approximate
 face = 2.02;
 $fn = 180;
-screw_off = 35; // x/y offsets for mounting screw holes
+screw_off = 36; // x/y offsets for mounting screw holes
 screw_d = 5;    // hole diameter for mounting screws
 
 difference() {
@@ -29,7 +29,7 @@ difference() {
             }
             union() {
                 // grill center and bars
-                cylinder(d=40, h=face);
+                cylinder(d=30, h=face);
                 translate([-40, -2, 0]) cube([80, 4, face]);
                 translate([-2, -40, 0]) cube([4, 80, face]);
             }
