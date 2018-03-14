@@ -1,3 +1,13 @@
+Obsolete
+========
+
+This remix + design was abandoned and replaced by my from-scratch
+(Replicase)[https://github.com/johnsonm/Replicase] design, done
+entirely in OpenSCAD.  I have no intention to do any further work
+on this remix of Replicape Case.  You are welcome to use it, but
+I have no plans to pay attention to PRs for this repository.
+
+
 OpenSCAD remixes of Replicape case, changing ventilation.
 
 Originally:
